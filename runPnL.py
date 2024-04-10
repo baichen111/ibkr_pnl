@@ -1,6 +1,7 @@
 from ib_insync import *
 import pandas as pd
 import time
+from accountInfo import acc  # load account info
 
 #pd.set_option('display.max_columns', None)
 util.startLoop()
@@ -8,7 +9,7 @@ util.startLoop()
 ib = IB()
 ib.connect('127.0.0.1', 7496, clientId=2)
 
-account = "U7549560"
+account = acc
 portItems = ib.portfolio(account)  # get portfolio information
 
 
