@@ -17,10 +17,8 @@ def getDailyPnL(account: str):
     for port in portItems:
         ib.reqPnLSingle(account, "", port.contract.conId)
     ib.sleep(3)  #must use ib.sleep rather than time.sleep
-    dailyPnL = []
-    for pnl in ib.pnlSingle(account):
-        dailyPnL.append(pnl.dailyPnL)
-    return dailyPnL
+    daily_pnl = [pnl.dailyPnL for pnl in ib.pnlSingle(account)]
+    return daily_pnl
 
 
 def pnl_df():
@@ -38,7 +36,8 @@ def pnl_df():
     df['rights'] = rights
     df['strikes'] = strikes
     df = df[
-        ['symbols', 'secTypes','rights','strikes','currency', 'position', 'marketPrice', 'marketValue', 'averageCost', 'unrealizedPNL', 'realizedPNL',
+        ['symbols', 'secTypes', 'rights', 'strikes', 'currency', 'position', 'marketPrice', 'marketValue',
+         'averageCost', 'unrealizedPNL', 'realizedPNL',
          'dailyPnL', 'account']]
     df['date'] = pd.Timestamp.today()
     df.set_index('date', inplace=True)
