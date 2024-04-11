@@ -9,7 +9,7 @@ ib.connect('127.0.0.1', 7496, clientId=2)
 
 account = acc
 portItems = ib.portfolio(account)  # get portfolio information
-#print(portItems)
+print(portItems)
 
 
 def getDailyPnL(account: str):
@@ -17,7 +17,7 @@ def getDailyPnL(account: str):
         ib.reqPnLSingle(account, "", port.contract.conId)
     ib.sleep(2)  #must use ib.sleep rather than time.sleep
     daily_pnl = [pnl.dailyPnL for pnl in ib.pnlSingle(account)]
-    # print(daily_pnl)
+    print(daily_pnl)
     print("Total daily profit & loss: ", sum(daily_pnl))
     return daily_pnl
 
