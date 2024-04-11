@@ -42,11 +42,13 @@ def pnl_df():
     df['date'] = pd.Timestamp.today()
     df.set_index('date', inplace=True)
     return df
-
+def onDisconnected():         #callback after disconnected from TWS
+    print("You are disconnected !")
 
 if __name__ == "__main__":
+    ib.disconnectedEvent += onDisconnected
     df = pnl_df()
     TodayDate = time.strftime("%d_%m_%Y")
     file_name = TodayDate + "_DailyPnL.csv"
     df.to_csv("C:\ibkrPnL\\" + file_name)
-    ib.disconnect()
+
