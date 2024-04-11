@@ -1,12 +1,7 @@
 from ib_insync import *
 import pandas as pd
 import time
-#import warnings
-
 from accountInfo import acc  # load account info
-
-#pd.set_option('display.max_columns', None)
-#warnings.filterwarnings('ignore')
 util.startLoop()
 
 ib = IB()
