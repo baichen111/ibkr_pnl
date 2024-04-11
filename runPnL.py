@@ -1,10 +1,12 @@
 from ib_insync import *
 import pandas as pd
 import time
-import threading
+#import warnings
+
 from accountInfo import acc  # load account info
 
 #pd.set_option('display.max_columns', None)
+#warnings.filterwarnings('ignore')
 util.startLoop()
 
 ib = IB()
@@ -12,14 +14,15 @@ ib.connect('127.0.0.1', 7496, clientId=2)
 
 account = acc
 portItems = ib.portfolio(account)  # get portfolio information
-print(portItems)
+#print(portItems)
 
 
 def getDailyPnL(account: str):
     for port in portItems:
         ib.reqPnLSingle(account, "", port.contract.conId)
-    ib.sleep(3)  #must use ib.sleep rather than time.sleep
+    ib.sleep(2)  #must use ib.sleep rather than time.sleep
     daily_pnl = [pnl.dailyPnL for pnl in ib.pnlSingle(account)]
+    # print(daily_pnl)
     print("Total daily profit & loss: ", sum(daily_pnl))
     return daily_pnl
 
@@ -42,6 +45,7 @@ def pnl_df():
         ['symbols', 'secTypes', 'rights', 'strikes', 'currency', 'position', 'marketPrice', 'marketValue',
          'averageCost', 'unrealizedPNL', 'realizedPNL',
          'dailyPnL', 'account']]
+    df.loc['Total'] = df[['marketValue','unrealizedPNL','realizedPNL','dailyPnL']].sum()
     df['date'] = pd.Timestamp.today()
     df.set_index('date', inplace=True)
     return df
