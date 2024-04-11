@@ -1,6 +1,7 @@
 from ib_insync import *
 import pandas as pd
 import time
+import threading
 from accountInfo import acc  # load account info
 
 #pd.set_option('display.max_columns', None)
@@ -11,6 +12,7 @@ ib.connect('127.0.0.1', 7496, clientId=2)
 
 account = acc
 portItems = ib.portfolio(account)  # get portfolio information
+print(portItems)
 
 
 def getDailyPnL(account: str):
@@ -18,6 +20,7 @@ def getDailyPnL(account: str):
         ib.reqPnLSingle(account, "", port.contract.conId)
     ib.sleep(3)  #must use ib.sleep rather than time.sleep
     daily_pnl = [pnl.dailyPnL for pnl in ib.pnlSingle(account)]
+    print("Total daily profit & loss: ", sum(daily_pnl))
     return daily_pnl
 
 
@@ -44,13 +47,18 @@ def pnl_df():
     return df
 
 
-def on_Disconnected():  #callback after disconnected from TWS
+def on_pnlSingle(entry: PnLSingle):
+    print(entry)
+
+
+def on_disconnected():  #callback after disconnected from TWS
     print("You are disconnected !")
 
 
 if __name__ == "__main__":
-    ib.disconnectedEvent += on_Disconnected
+    ib.pnlSingleEvent += on_pnlSingle
+    ib.disconnectedEvent += on_disconnected
     df = pnl_df()
     TodayDate = time.strftime("%d_%m_%Y")
-    file_name = TodayDate + "_DailyPnL.csv"
+    file_name = TodayDate + "_DailyPnLtest.csv"
     df.to_csv("C:\ibkrPnL\\" + file_name)
