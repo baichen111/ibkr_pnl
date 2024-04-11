@@ -45,9 +45,10 @@ def pnl_df():
         ['symbols', 'secTypes', 'rights', 'strikes', 'currency', 'position', 'marketPrice', 'marketValue',
          'averageCost', 'unrealizedPNL', 'realizedPNL',
          'dailyPnL', 'account']]
-    df.loc['Total'] = df[['marketValue','unrealizedPNL','realizedPNL','dailyPnL']].sum()
+    df.loc['Total'] = df[['marketValue', 'unrealizedPNL', 'realizedPNL', 'dailyPnL']].sum()
     df['date'] = pd.Timestamp.today()
     df.set_index('date', inplace=True)
+    df.fillna('', inplace=True)
     return df
 
 
