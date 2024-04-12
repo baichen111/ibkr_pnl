@@ -1,7 +1,9 @@
 from ib_insync import *
 import pandas as pd
 import time
+from datetime import date, timedelta
 from accountInfo import acc  # load account info
+
 util.startLoop()
 
 ib = IB()
@@ -18,7 +20,7 @@ def getDailyPnL(account: str):
     ib.sleep(2)  #must use ib.sleep rather than time.sleep
     daily_pnl = [pnl.dailyPnL for pnl in ib.pnlSingle(account)]
     print(daily_pnl)
-    print("Total daily profit & loss: ", sum(daily_pnl))
+    print(f"{date.today() - timedelta(days=1)} total daily profit & loss: {sum(daily_pnl)}")
     return daily_pnl
 
 
@@ -60,5 +62,5 @@ if __name__ == "__main__":
     ib.disconnectedEvent += on_disconnected
     df = pnl_df()
     TodayDate = time.strftime("%d_%m_%Y")
-    file_name = TodayDate + "_DailyPnLtest.csv"
+    file_name = TodayDate + "_DailyPnL.csv"
     df.to_csv("C:\ibkrPnL\\" + file_name)
