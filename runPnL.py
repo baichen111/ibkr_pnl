@@ -2,6 +2,7 @@ from ib_insync import *
 import pandas as pd
 import time
 from datetime import date, timedelta
+import asyncio
 from accountInfo import acc  # load account info
 
 util.startLoop()
@@ -13,10 +14,12 @@ account = acc
 portItems = ib.portfolio(account)  # get portfolio information
 print(portItems)
 
-
-def getDailyPnL(account: str):
+async def get_portfolio():
     for port in portItems:
         ib.reqPnLSingle(account, "", port.contract.conId)
+
+async  def getDailyPnL(account: str):
+    await get_portfolio()
     ib.sleep(2)  #must use ib.sleep rather than time.sleep
     daily_pnl = [pnl.dailyPnL for pnl in ib.pnlSingle(account)]
     print(daily_pnl)
@@ -24,7 +27,7 @@ def getDailyPnL(account: str):
     return daily_pnl
 
 
-def pnl_df():
+async def pnl_df():
     symbols = [port.contract.symbol for port in portItems]
     currency = [port.contract.currency for port in portItems]
     sec_types = [port.contract.secType for port in portItems]
@@ -34,7 +37,7 @@ def pnl_df():
                  ['position', 'marketPrice', 'marketValue', 'averageCost', 'unrealizedPNL', 'realizedPNL', 'account'])
     df['symbols'] = symbols
     df['currency'] = currency
-    df['dailyPnL'] = getDailyPnL(account)
+    df['dailyPnL'] = await getDailyPnL(account)
     df['secTypes'] = sec_types
     df['rights'] = rights
     df['strikes'] = strikes
@@ -60,7 +63,7 @@ def on_disconnected():  #callback after disconnected from TWS
 if __name__ == "__main__":
     ib.pnlSingleEvent += on_pnlSingle
     ib.disconnectedEvent += on_disconnected
-    df = pnl_df()
+    df = asyncio.run(pnl_df())
     TodayDate = time.strftime("%d_%m_%Y")
-    file_name = TodayDate + "_DailyPnL.csv"
+    file_name = TodayDate + "_DailyPnLtest.csv"
     df.to_csv("C:\ibkrPnL\\" + file_name)
