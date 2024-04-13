@@ -14,12 +14,14 @@ account = acc
 portItems = ib.portfolio(account)  # get portfolio information
 print(portItems)
 
-async def get_portfolio():
+
+async def get_positions():
     for port in portItems:
         ib.reqPnLSingle(account, "", port.contract.conId)
 
-async  def getDailyPnL(account: str):
-    await get_portfolio()
+
+async def getDailyPnL(account: str):
+    await get_positions()
     ib.sleep(2)  #must use ib.sleep rather than time.sleep
     daily_pnl = [pnl.dailyPnL for pnl in ib.pnlSingle(account)]
     print(daily_pnl)
