@@ -66,4 +66,4 @@ if __name__ == "__main__":
     df = asyncio.run(pnl_df())
     TodayDate = time.strftime("%d_%m_%Y")
     file_name = TodayDate + "_DailyPnLtest.csv"
-    df.to_csv("C:\ibkrPnL\\" + file_name)
+    df.to_csv(file_name)
