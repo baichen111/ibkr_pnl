@@ -1,6 +1,7 @@
 from ib_insync import *
 import pandas as pd
 import time
+import os
 from datetime import date, timedelta
 
 from accountInfo import acc  # load account info
@@ -68,4 +69,6 @@ if __name__ == "__main__":
     df = pnl_df()
     TodayDate = time.strftime("%d_%m_%Y")
     file_name = TodayDate + "_DailyPnLtest.csv"
-    df.to_csv(file_name)
+    path = "ibkr_daily_pnl/"
+    os.makedirs(path,exist_ok=True)
+    df.to_csv(path+file_name)
