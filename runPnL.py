@@ -2,7 +2,7 @@ from ib_insync import *
 import pandas as pd
 import time
 from datetime import date, timedelta
-import asyncio
+
 from accountInfo import acc  # load account info
 
 util.startLoop()
@@ -15,21 +15,21 @@ portItems = ib.portfolio(account)  # get portfolio information
 print(portItems)
 
 
-async def get_positions():
+def get_positions():
     for port in portItems:
         ib.reqPnLSingle(account, "", port.contract.conId)
+        ib.sleep(1)
 
 
-async def getDailyPnL(account: str):
-    await get_positions()
-    ib.sleep(2)  #must use ib.sleep rather than time.sleep
+def getDailyPnL(account: str):
+    get_positions()
     daily_pnl = [pnl.dailyPnL for pnl in ib.pnlSingle(account)]
     print(daily_pnl)
     print(f"{date.today() - timedelta(days=1)} total daily profit & loss: {sum(daily_pnl)}")
     return daily_pnl
 
 
-async def pnl_df():
+def pnl_df():
     symbols = [port.contract.symbol for port in portItems]
     currency = [port.contract.currency for port in portItems]
     sec_types = [port.contract.secType for port in portItems]
@@ -39,7 +39,7 @@ async def pnl_df():
                  ['position', 'marketPrice', 'marketValue', 'averageCost', 'unrealizedPNL', 'realizedPNL', 'account'])
     df['symbols'] = symbols
     df['currency'] = currency
-    df['dailyPnL'] = await getDailyPnL(account)
+    df['dailyPnL'] = getDailyPnL(account)
     df['secTypes'] = sec_types
     df['rights'] = rights
     df['strikes'] = strikes
@@ -65,7 +65,7 @@ def on_disconnected():  #callback after disconnected from TWS
 if __name__ == "__main__":
     ib.pnlSingleEvent += on_pnlSingle
     ib.disconnectedEvent += on_disconnected
-    df = asyncio.run(pnl_df())
+    df = pnl_df()
     TodayDate = time.strftime("%d_%m_%Y")
     file_name = TodayDate + "_DailyPnLtest.csv"
     df.to_csv(file_name)
