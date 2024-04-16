@@ -1,7 +1,6 @@
 from ib_insync import *
 import pandas as pd
-import time
-import os
+import time, os
 from datetime import date, timedelta
 
 from accountInfo import acc  # load account info
@@ -15,6 +14,9 @@ account = acc
 portItems = ib.portfolio(account)  # get portfolio information
 print(portItems)
 
+con_id = {port.contract.conId: port.contract.symbol for port in portItems}  #map contract id to symbol
+print(con_id)
+
 
 def get_positions():
     for port in portItems:
@@ -24,26 +26,21 @@ def get_positions():
 
 def getDailyPnL(account: str):
     get_positions()
-    daily_pnl = [pnl.dailyPnL for pnl in ib.pnlSingle(account)]
+    daily_pnl = {con_id[pnl.conId]: pnl.dailyPnL for pnl in ib.pnlSingle(account)}
     print(daily_pnl)
-    print(f"{date.today() - timedelta(days=1)} total daily profit & loss: {sum(daily_pnl)}")
+    print(f"{date.today() - timedelta(days=1)} total daily profit & loss: {sum(list(daily_pnl.values()))}")
     return daily_pnl
 
 
 def pnl_df():
-    symbols = [port.contract.symbol for port in portItems]
-    currency = [port.contract.currency for port in portItems]
-    sec_types = [port.contract.secType for port in portItems]
-    rights = [port.contract.right for port in portItems]
-    strikes = [port.contract.strike for port in portItems]
     df = util.df(portItems,
                  ['position', 'marketPrice', 'marketValue', 'averageCost', 'unrealizedPNL', 'realizedPNL', 'account'])
-    df['symbols'] = symbols
-    df['currency'] = currency
-    df['dailyPnL'] = getDailyPnL(account)
-    df['secTypes'] = sec_types
-    df['rights'] = rights
-    df['strikes'] = strikes
+    df['symbols'] = [port.contract.symbol for port in portItems]
+    df['currency'] = [port.contract.currency for port in portItems]
+    df['dailyPnL'] = list(getDailyPnL(account).values())
+    df['secTypes'] = [port.contract.secType for port in portItems]
+    df['rights'] = [port.contract.right for port in portItems]
+    df['strikes'] = [port.contract.strike for port in portItems]
     df = df[
         ['symbols', 'secTypes', 'rights', 'strikes', 'currency', 'position', 'marketPrice', 'marketValue',
          'averageCost', 'unrealizedPNL', 'realizedPNL',
@@ -70,5 +67,5 @@ if __name__ == "__main__":
     TodayDate = time.strftime("%d_%m_%Y")
     file_name = TodayDate + "_DailyPnLtest.csv"
     path = "ibkr_daily_pnl/"
-    os.makedirs(path,exist_ok=True)
-    df.to_csv(path+file_name)
+    os.makedirs(path, exist_ok=True)
+    df.to_csv(path + file_name)
