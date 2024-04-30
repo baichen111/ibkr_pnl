@@ -11,8 +11,7 @@ util.startLoop()
 ib = IB()
 ib.connect('127.0.0.1', 4001, clientId=3)  #gateway port is 4001
 
-portItems = ib.portfolio(acc)  # get portfolio information
-con_id = {port.contract.conId: port.contract.symbol for port in portItems}  #map contract id to symbol
+
 
 
 def get_positions():
@@ -59,6 +58,8 @@ if __name__ == "__main__":
     ib.pnlSingleEvent += on_pnlSingle
     ib.disconnectedEvent += on_disconnected
     while True:
+        portItems = ib.portfolio(acc)  # get portfolio information
+        con_id = {port.contract.conId: port.contract.symbol for port in portItems}  # map contract id to symbol
         df = pnl_df()
         print(df)
         for c ,_ in con_id.items():
