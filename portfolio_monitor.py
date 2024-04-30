@@ -1,6 +1,5 @@
 from ib_insync import *
 import pandas as pd
-from datetime import date, timedelta
 import warnings
 from accountInfo import acc
 
@@ -10,8 +9,6 @@ util.startLoop()
 
 ib = IB()
 ib.connect('127.0.0.1', 4001, clientId=3)  #gateway port is 4001
-
-
 
 
 def get_positions():
@@ -62,7 +59,7 @@ if __name__ == "__main__":
         con_id = {port.contract.conId: port.contract.symbol for port in portItems}  # map contract id to symbol
         df = pnl_df()
         print(df)
-        for c ,_ in con_id.items():
-            ib.cancelPnLSingle(acc,"",c)
-        print("="*302)
+        for c, _ in con_id.items():
+            ib.cancelPnLSingle(acc, "", c)
+        print("=" * 302)
         ib.sleep(60)
