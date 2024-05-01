@@ -1,5 +1,6 @@
 from ib_insync import *
 import pandas as pd
+import datetime
 import warnings
 from accountInfo import acc
 
@@ -42,7 +43,6 @@ def pnl_df():
     df.fillna('', inplace=True)
     return df
 
-
 def account_info(*tags):  #account information based on tags params
     my_account = util.df(ib.accountValues())
     condition0 = my_account['currency'] == 'USD'
@@ -50,7 +50,6 @@ def account_info(*tags):  #account information based on tags params
     for tag in tags:
         condition |= (my_account['tag'] == tag)
     return my_account[condition & condition0]
-
 
 def on_pnlSingle(entry: PnLSingle):
     ...
@@ -63,17 +62,18 @@ def on_disconnected():  #callback after disconnected from TWS
 if __name__ == "__main__":
     ib.pnlSingleEvent += on_pnlSingle
     ib.disconnectedEvent += on_disconnected
-    tags = ['TotalCashValue', 'NetLiquidationByCurrency',
-            'StockMarketValue', 'UnrealizedPnL', 'BuyingPower', 'RealizedPnL', 'AccruedCash']
+    tags = ['TotalCashValue','NetLiquidationByCurrency',
+            'StockMarketValue','UnrealizedPnL','BuyingPower','RealizedPnL','AccruedCash']
     while True:
         portItems = ib.portfolio(acc)  # get portfolio information
         con_id = {port.contract.conId: port.contract.symbol for port in portItems}  #map contract id to symbol
         accoutinfo = account_info(*tags)
+        print(f"Snapshot of Account Information and Profit & Loss at {datetime.datetime.now()}: \n".center(151) )
         print(accoutinfo)
-        print("#" * 151)
+        print("#"*151)
         df = pnl_df()
         print(df)
-        for c, _ in con_id.items():
-            ib.cancelPnLSingle(acc, "", c)
-        print("=" * 302)
-        ib.sleep(60 * 5)
+        for c ,_ in con_id.items():
+            ib.cancelPnLSingle(acc,"",c)
+        print("="*302)
+        ib.sleep(60*5)
