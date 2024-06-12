@@ -48,6 +48,8 @@ def cash_row(cols):
             cashDict[c] = ['USD']
         elif c == 'account':
             cashDict[c] = [account]
+        else:
+            cashDict[c] = 0
     return cashDict
 
 def pnl_df():
