@@ -2,6 +2,7 @@ from ib_insync import *
 import pandas as pd
 import time, os
 from datetime import date, timedelta
+from collections import defaultdict
 
 from accountInfo import acc  # load account info
 
@@ -14,8 +15,11 @@ account = acc
 portItems = ib.portfolio(account)  # get portfolio information
 print(portItems)
 
+
 con_id = {port.contract.conId: port.contract.symbol for port in portItems}  #map contract id to symbol
-print(con_id)
+
+
+# print(con_id)
 
 
 def get_positions():
@@ -27,10 +31,24 @@ def get_positions():
 def getDailyPnL(account: str):
     get_positions()
     daily_pnl = {con_id[pnl.conId]: pnl.dailyPnL for pnl in ib.pnlSingle(account)}
-    print(daily_pnl)
     print(f"{date.today() - timedelta(days=1)} total daily profit & loss: {sum(list(daily_pnl.values()))}")
     return daily_pnl
 
+def cash_row(cols):
+    cashValue = float(ib.accountSummary(account)[-1].value)  # get cash value in the account
+    cashDict = defaultdict(None)
+    for c in cols:
+        if c == "secTypes":
+            cashDict[c] = ['Cash']
+        elif c == 'marketValue':
+            cashDict[c] = [cashValue]
+        elif c == 'symbols':
+            cashDict[c] = ['CASH']
+        elif c == 'currency':
+            cashDict[c] = ['USD']
+        elif c == 'account':
+            cashDict[c] = [account]
+    return cashDict
 
 def pnl_df():
     df = util.df(portItems,
@@ -41,6 +59,8 @@ def pnl_df():
     df['secTypes'] = [port.contract.secType for port in portItems]
     df['rights'] = [port.contract.right for port in portItems]
     df['strikes'] = [port.contract.strike for port in portItems]
+    cashRow = cash_row(df.columns)
+    df = pd.concat([df,pd.DataFrame(cashRow)],ignore_index=True) # append a row for cash value
     df = df[
         ['symbols', 'secTypes', 'rights', 'strikes', 'currency', 'position', 'marketPrice', 'marketValue',
          'averageCost', 'unrealizedPNL', 'realizedPNL',
@@ -54,6 +74,7 @@ def pnl_df():
 
 def on_pnlSingle(entry: PnLSingle):
     print(entry)
+
 
 
 def on_disconnected():  #callback after disconnected from TWS
