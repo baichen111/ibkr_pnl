@@ -1,8 +1,10 @@
-from ib_insync import *
-import pandas as pd
-import time, os
-from datetime import date, timedelta
+import os
+import time
 from collections import defaultdict
+from datetime import date, timedelta
+
+import pandas as pd
+from ib_insync import *
 
 from accountInfo import acc  # load account info
 
