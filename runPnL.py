@@ -86,7 +86,6 @@ def pnl_df():
     df.loc['Total'] = df[['marketValue', 'unrealizedPNL', 'realizedPNL', 'dailyPnL']].sum()
     df['date'] = pd.Timestamp.today()
     df.set_index('date', inplace=True)
-    df.fillna('', inplace=True)
     df = df.round(2)
     return df
 
