@@ -15,7 +15,7 @@ ib.connect('127.0.0.1', 7496, clientId=2)
 
 account = acc
 portItems = ib.portfolio(account)  # get portfolio information
-con_id = {port.contract.conId: port.contract.symbol for port in portItems}  #map contract id to symbol
+con_id = {port.contract.conId: (port.contract.symbol + "_Option" if port.contract.secType == "OPT" else port.contract.symbol) for port in portItems}   #map contract id to symbol
 
 
 def get_positions():
