@@ -104,7 +104,7 @@ def save_df(df: pd.DataFrame, path: str = "ibkr_daily_pnl/"):
 
 
 def on_pnlSingle(entry: PnLSingle):
-    print(entry)
+    print(f"Symbol: {con_id[entry.conId]}\tDailyPnL: {round(entry.dailyPnL,2)}\tUnrealizedPnL: {round(entry.unrealizedPnL,2)}\tPosition: {entry.position}\tMarket Value: {round(entry.value,2)}")
 
 
 def on_disconnected():  #callback after disconnected from TWS
