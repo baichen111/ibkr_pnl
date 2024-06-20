@@ -87,6 +87,7 @@ def pnl_df():
     df['date'] = pd.Timestamp.today()
     df.set_index('date', inplace=True)
     df = df.round(2)
+    print(df)
     return df
 
 
@@ -104,8 +105,8 @@ def save_df(df: pd.DataFrame, path: str = "ibkr_daily_pnl/"):
 
 
 def on_pnlSingle(entry: PnLSingle):
-    print(f"Symbol: {con_id[entry.conId]}\tDailyPnL: {round(entry.dailyPnL,2)}\tUnrealizedPnL: {round(entry.unrealizedPnL,2)}\tPosition: {entry.position}\tMarket Value: {round(entry.value,2)}")
-
+    #print(f"Symbol: {con_id[entry.conId]}\tDailyPnL: {round(entry.dailyPnL,2)}\tUnrealizedPnL: {round(entry.unrealizedPnL,2)}\tPosition: {entry.position}\tMarket Value: {round(entry.value,2)}")
+    ...
 
 def on_disconnected():  #callback after disconnected from TWS
     print("You are disconnected !")
