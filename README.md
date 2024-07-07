@@ -1,1 +1,1 @@
-generate daily profit and loss report in csv
+a data workflow for daily pnl report using IBKR
