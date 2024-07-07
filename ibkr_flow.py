@@ -1,0 +1,46 @@
+# airflow schedule shell commands
+
+from  datetime import datetime,timedelta
+from airflow import DAG
+
+from airflow.operators.bash import BashOperator
+
+defaul_args = {
+    'owner':'baichen', # owner is user airflow
+    'start_date':datetime(2024,7,1), # DAT start time first time
+    'retries':10,  #retry times if failed
+    'retry_delay':timedelta(minutes=5), # retry interval
+}
+
+dag = DAG(
+    dag_id='IBKR', #displays in webUI
+    default_args=defaul_args,
+    # schedule_interval=timedelta(days=1) , # can be days, weeks,hours, minutes
+    # schedule_interval='@daily',
+    schedule_interval="1 4 * * 2-6",   #crontab  style 
+    catchup=False  # False : will not backfill previous data
+)
+
+
+#create tasks
+start = BashOperator(
+    task_id = 'start',
+    bash_command='echo "daily pnl starts"',
+    dag = dag
+)
+
+daily_pnl = BashOperator(
+    task_id = 'daily_pnl',
+    bash_command='/home/baichen/anaconda3/bin/python /home/baichen/ibkr_pnl/runPnL.py',
+    dag = dag
+)
+
+end = BashOperator(
+    task_id = 'end',
+    bash_command='echo "daily pnl ends"',
+    dag = dag
+)
+
+
+#tasks dependencies
+start >> daily_pnl >> end 
