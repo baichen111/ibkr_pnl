@@ -10,6 +10,11 @@ from accountInfo import acc  # load account info
 
 util.startLoop()
 
+pd.set_option('display.max_rows', None)
+pd.set_option('display.max_columns', None)
+pd.set_option('display.width', None)
+pd.set_option('display.max_colwidth', -1)
+
 ib = IB()
 ib.connect('127.0.0.1', 7496, clientId=2)
 
@@ -91,7 +96,7 @@ def pnl_df():
     return df
 
 
-def save_df(df: pd.DataFrame, path: str = "ibkr_daily_pnl/"):
+def save_df(df: pd.DataFrame, path: str = "/home/baichen/ibkr_daily_pnl/"):
     """
     save daily pnl to disk
     :param df: dataframe
@@ -101,6 +106,7 @@ def save_df(df: pd.DataFrame, path: str = "ibkr_daily_pnl/"):
     TodayDate = time.strftime("%d_%m_%Y")
     file_name = "/" + TodayDate + "_DailyPnLtest.csv"
     os.makedirs(path, exist_ok=True)
+    print("Saving down csv file to ",path+file_name)
     df.to_csv(path + file_name)
 
 
