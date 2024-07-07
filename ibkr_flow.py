@@ -18,6 +18,7 @@ dag = DAG(
     # schedule_interval=timedelta(days=1) , # can be days, weeks,hours, minutes
     # schedule_interval='@daily',
     schedule_interval="1 4 * * 2-6",   #crontab  style 
+    # schedule_interval="* * * * *",
     catchup=False  # False : will not backfill previous data
 )
 
@@ -35,6 +36,12 @@ daily_pnl = BashOperator(
     dag = dag
 )
 
+daily_assets_pnl = BashOperator(
+    task_id = 'daily_load_assets',
+    bash_command='/home/baichen/anaconda3/bin/python /home/baichen/ibkr_pnl/load_assets.py',
+    dag = dag
+)
+
 end = BashOperator(
     task_id = 'end',
     bash_command='echo "daily pnl ends"',
@@ -43,4 +50,4 @@ end = BashOperator(
 
 
 #tasks dependencies
-start >> daily_pnl >> end 
+start >> daily_pnl  >> daily_assets_pnl >> end 
