@@ -1,9 +1,11 @@
 # airflow schedule shell commands
 
 from  datetime import datetime,timedelta
+import time
 from airflow import DAG
 
 from airflow.operators.bash import BashOperator
+from airflow.sensors.filesystem import FileSensor
 
 defaul_args = {
     'owner':'baichen', # owner is user airflow
@@ -36,6 +38,13 @@ daily_pnl = BashOperator(
     dag = dag
 )
 
+daily_pnl_sensor = FileSensor(
+    task_id = 'daily_pnl_file_sensor',
+    filepath = '/home/baichen/ibkr_daily_pnl/'+time.strftime("%d_%m_%Y")+'_DailyPnL.csv',
+    poke_interval = 10,
+    dag = dag
+    )
+
 daily_assets_pnl = BashOperator(
     task_id = 'daily_load_assets',
     bash_command='/home/baichen/anaconda3/bin/python /home/baichen/ibkr_pnl/load_assets.py',
@@ -50,4 +59,4 @@ end = BashOperator(
 
 
 #tasks dependencies
-start >> daily_pnl  >> daily_assets_pnl >> end 
+start >> daily_pnl  >> daily_pnl_sensor >> daily_assets_pnl >> end 
