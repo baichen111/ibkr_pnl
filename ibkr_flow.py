@@ -15,11 +15,11 @@ defaul_args = {
 }
 
 dag = DAG(
-    dag_id='IBKR', #displays in webUI
+    dag_id='ibkr_trade', #displays in webUI
     default_args=defaul_args,
     # schedule_interval=timedelta(days=1) , # can be days, weeks,hours, minutes
     # schedule_interval='@daily',
-    schedule_interval="1 4 * * 2-6",   #crontab  style 
+    schedule_interval="5 4 * * 2-6",   #crontab  style 
     # schedule_interval="* * * * *",
     catchup=False  # False : will not backfill previous data
 )
@@ -57,6 +57,13 @@ end = BashOperator(
     dag = dag
 )
 
+#load daily pnl with kdb
+daily_pnl_hdb_Q = BashOperator(
+    task_id = 'daily_pnl_hdb_Q',
+    bash_command='/home/baichen/q/l64/q /home/baichen/ibkr_pnl/pnl_full_hdb.q',
+    dag = dag
+)
+
 
 #tasks dependencies
-start >> daily_pnl  >> daily_pnl_sensor >> daily_assets_pnl >> end 
+start >> daily_pnl  >> daily_pnl_sensor >> [daily_assets_pnl,daily_pnl_hdb_Q] >> end 
