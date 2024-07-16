@@ -60,7 +60,7 @@ end = BashOperator(
 #load daily pnl with kdb
 daily_pnl_hdb_Q = BashOperator(
     task_id = 'daily_pnl_hdb_Q',
-    bash_command='/home/baichen/q/l64/q /home/baichen/ibkr_pnl/pnl_full_hdb.q',
+    bash_command='/home/baichen/q/l64/q /home/baichen/ibkr_pnl/load_today.q',
     dag = dag
 )
 
