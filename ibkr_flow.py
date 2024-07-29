@@ -51,6 +51,12 @@ daily_assets_pnl = BashOperator(
     dag = dag
 )
 
+daily_pnl_plot = BashOperator(
+    task_id = 'daily_pnl_plot',
+    bash_command='/home/baichen/anaconda3/bin/python /home/baichen/ibkr_pnl/plot_pnl.py',
+    dag = dag
+)
+
 end = BashOperator(
     task_id = 'end',
     bash_command='echo "daily pnl ends"',
@@ -66,4 +72,4 @@ daily_pnl_hdb_Q = BashOperator(
 
 
 #tasks dependencies
-start >> daily_pnl  >> daily_pnl_sensor >> [daily_assets_pnl,daily_pnl_hdb_Q] >> end 
+start >> daily_pnl  >> daily_pnl_sensor >> [daily_assets_pnl,daily_pnl_plot,daily_pnl_hdb_Q] >> end 
