@@ -2,6 +2,7 @@ import pandas as pd
 import glob,time
 import seaborn as sns
 import matplotlib.pyplot as plt
+import matplotlib.ticker as mtick
 
 
 csv_files = glob.glob('/home/baichen/ibkr_daily_pnl/*.csv')
@@ -13,10 +14,19 @@ port_df.set_index('date',inplace=True)
 port_df =port_df.sort_index()
 port_df.index = port_df.index.date
 
+kurtosis = port_df['dailyPnL'].kurtosis()
+skewness = port_df['dailyPnL'].skew()
+mean = round(port_df['dailyPnL'].mean(),2)
+median = round(port_df['dailyPnL'].median(),2)
+
 sns.set(rc = {'figure.figsize':(18,8)})
-ax=sns.histplot(x='dailyPnL',data=port_df,binwidth=2500,binrange=(-20000,20000),kde=True,stat="percent")
+ax=sns.histplot(x='dailyPnL',data=port_df,binwidth=2500,binrange=(-30000,30000),kde=True,stat="percent")
+ax.text(25000, 25, f'kurtosis: {round(kurtosis,2)} \nskewness: {round(skewness,2)} \nmean: ${mean} \nmedian = ${median}', size=15, color='purple')
+fmt = '${x:,.0f}'
+tick = mtick.StrMethodFormatter(fmt)
+ax.xaxis.set_major_formatter(tick) 
 for i in ax.containers:
     ax.bar_label(i,)
     
 TodayDate = time.strftime("%d_%m_%Y")
-plt.savefig('/home/baichen/ibkr_plot_pnl/' + TodayDate + '_daily_pnl.png',dpi=300)
+plt.savefig('/home/baichen/ibkr_plot_pnl/' + TodayDate + '_daily_pnl.png',dpi=500)
