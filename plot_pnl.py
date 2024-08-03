@@ -18,10 +18,11 @@ kurtosis = port_df['dailyPnL'].kurtosis()
 skewness = port_df['dailyPnL'].skew()
 mean = round(port_df['dailyPnL'].mean(),2)
 median = round(port_df['dailyPnL'].median(),2)
+std = round(port_df['dailyPnL'].std(),2)
 
-sns.set(rc = {'figure.figsize':(18,8)})
+sns.set(rc = {'figure.figsize':(25,8)})
 ax=sns.histplot(x='dailyPnL',data=port_df,binwidth=2500,binrange=(-30000,30000),kde=True,stat="percent")
-ax.text(25000, 25, f'kurtosis: {round(kurtosis,2)} \nskewness: {round(skewness,2)} \nmean: ${mean} \nmedian = ${median}', size=15, color='purple')
+ax.text(25000, 20, f'kurtosis: {round(kurtosis,2)} \nskewness: {round(skewness,2)} \nmean: USD{mean} \nmedian = USD{median} \nvolatility = USD{std}', size=10, color='purple')
 fmt = '${x:,.0f}'
 tick = mtick.StrMethodFormatter(fmt)
 ax.xaxis.set_major_formatter(tick) 
