@@ -66,7 +66,8 @@ if __name__ == "__main__":
             'StockMarketValue','UnrealizedPnL','BuyingPower','RealizedPnL','AccruedCash']
     while True:
         portItems = ib.portfolio(acc)  # get portfolio information
-        con_id = {port.contract.conId: port.contract.symbol for port in portItems}  #map contract id to symbol
+        con_id = {port.contract.conId: (port.contract.symbol + "_Option" if port.contract.secType == "OPT" else port.contract.symbol) for port in portItems}   #map contract id to symbol
+
         accoutinfo = account_info(*tags)
         print(f"Snapshot of Account Information and Profit & Loss at {datetime.datetime.now()}: \n".center(151) )
         print(accoutinfo)
