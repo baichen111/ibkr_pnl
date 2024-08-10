@@ -19,7 +19,7 @@ dag = DAG(
     default_args=defaul_args,
     # schedule_interval=timedelta(days=1) , # can be days, weeks,hours, minutes
     # schedule_interval='@daily',
-    schedule_interval="5 4 * * 2-6",   #crontab  style 
+    schedule_interval="0 4 * * 2-6",   #crontab  style 
     # schedule_interval="* * * * *",
     catchup=False  # False : will not backfill previous data
 )
