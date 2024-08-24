@@ -1,5 +1,6 @@
 a data workflow for daily post-trade pnl report using IBKR
-![Screenshot from 2024-08-01 09-57-38](https://github.com/user-attachments/assets/580d9534-c100-4de6-a79a-f25add5ea60b)
+![image](https://github.com/user-attachments/assets/c49cbc33-3e8a-4af4-aa43-feb8cbc1e50f)
+
 
 
 
