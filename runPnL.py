@@ -13,10 +13,10 @@ util.startLoop()
 pd.set_option('display.max_rows', None)
 pd.set_option('display.max_columns', None)
 pd.set_option('display.width', None)
-pd.set_option('display.max_colwidth', -1)
+pd.set_option('display.max_colwidth', None)
 
 ib = IB()
-ib.connect('127.0.0.1', 7496, clientId=2)
+ib.connect('127.0.0.1', 4001, clientId=2)  #gateway port 4001; TWS UI 7496
 
 account = acc
 portItems = ib.portfolio(account)  # get portfolio information
@@ -40,7 +40,7 @@ def getDailyPnL(account: str):
     """
     get_positions()
     daily_pnl = {con_id[pnl.conId]: pnl.dailyPnL for pnl in ib.pnlSingle(account)}
-    print(f"{date.today() - timedelta(days=1)} total daily profit & loss: {sum(list(daily_pnl.values()))}")
+    print(f"{date.today() - timedelta(days=1)} total daily profit & loss: {round(sum(list(daily_pnl.values())),2)}")
     return daily_pnl
 
 
@@ -81,14 +81,16 @@ def pnl_df():
     df['secTypes'] = [port.contract.secType for port in portItems]
     df['rights'] = [port.contract.right for port in portItems]
     df['strikes'] = [port.contract.strike for port in portItems]
+    df['total_return'] = ((df['marketPrice'] / df['averageCost']) - 1).apply(lambda x: str(round(x * 100,2))+"%")
     cashRow = cash_row(df.columns)
     df = pd.concat([df, pd.DataFrame(cashRow)], ignore_index=True)  # append a row for cash value
     df = df[
         ['symbols', 'secTypes', 'rights', 'strikes', 'currency', 'position', 'marketPrice', 'marketValue',
          'averageCost', 'unrealizedPNL', 'realizedPNL',
-         'dailyPnL', 'account']]
+         'dailyPnL', 'total_return','account']]
     df = df.round(2)
     df.loc['Total'] = df[['marketValue', 'unrealizedPNL', 'realizedPNL', 'dailyPnL']].sum()
+    df.iloc[-1,df.columns.get_loc("total_return")]= str(round(100 * df.iloc[-1]['unrealizedPNL']/(df.iloc[-1]['marketValue'] - df.iloc[-1]['unrealizedPNL']),2))+"%" 
     df['date'] = pd.Timestamp.today()
     df.set_index('date', inplace=True)
     df = df.round(2)
@@ -104,7 +106,7 @@ def save_df(df: pd.DataFrame, path: str = "/home/baichen/ibkr_daily_pnl/"):
     :return: None
     """
     TodayDate = time.strftime("%d_%m_%Y")
-    file_name = "/" + TodayDate + "_DailyPnLtest.csv"
+    file_name = "/" + TodayDate + "_DailyPnL.csv"
     os.makedirs(path, exist_ok=True)
     print("Saving down csv file to ",path+file_name)
     df.to_csv(path + file_name)

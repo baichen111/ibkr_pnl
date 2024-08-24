@@ -3,7 +3,7 @@ fp_files:(` sv sf,) @/: csv_files ; // full-path csv files
 
 {
     hdbdir:`:/home/baichen/ibkr_hdb/ ;
-    t:("PSSSFSFFFFFFFS";enlist",")0: x;
+    t:("PSSSFSFFFFFFFSS";enlist",")0: x;
     d:`$string first `date$exec distinct date from t;
     savedir: ` sv hdbdir,d,`pnl` ;
     savedir set .Q.en[hdbdir;t];

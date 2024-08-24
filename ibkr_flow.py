@@ -70,6 +70,12 @@ daily_pnl_hdb_Q = BashOperator(
     dag = dag
 )
 
+#send daily report
+daily_report_email = BashOperator(
+    task_id = 'daily_report_email',
+    bash_command='/home/baichen/anaconda3/bin/python /home/baichen/ibkr_pnl/send_report.py',
+    dag = dag
+)
 
 #tasks dependencies
-start >> daily_pnl  >> daily_pnl_sensor >> [daily_assets_pnl,daily_pnl_plot,daily_pnl_hdb_Q] >> end 
+start >> daily_pnl  >> daily_pnl_sensor >> [daily_assets_pnl,daily_pnl_plot,daily_pnl_hdb_Q,daily_report_email] >> end 
