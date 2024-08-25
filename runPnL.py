@@ -117,8 +117,6 @@ def pnl_df():
     df = df.round(2)
     df.loc['Total'] = df[['marketValue', 'unrealizedPNL', 'realizedPNL', 'dailyPnL']].sum()
     df.iloc[-1,df.columns.get_loc("total_return")]= str(round(100 * df.iloc[-1]['unrealizedPNL']/(df.iloc[-1]['marketValue'] - df.iloc[-1]['unrealizedPNL']),2))+"%" 
-    df['date'] = pd.Timestamp.today()
-    df.set_index('date', inplace=True)
     df = df.round(2)
     return df
 
@@ -150,6 +148,8 @@ if __name__ == "__main__":
     ib.disconnectedEvent += on_disconnected
     df = pnl_df()
     dd_df = calculate_drawdown()
-    df = pd.merge(df,dd_df,on='symbols',how="left") #join pnl table and drawdown table
+    df = pd.merge(df,dd_df,on='symbols',how="outer") #join pnl table and drawdown table
+    df['date'] = pd.Timestamp.today()
+    df.set_index('date', inplace=True)
     print(df)
     save_df(df)
