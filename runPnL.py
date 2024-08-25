@@ -131,7 +131,7 @@ def save_df(df: pd.DataFrame, path: str = "/home/baichen/ibkr_daily_pnl/"):
     :return: None
     """
     TodayDate = time.strftime("%d_%m_%Y")
-    file_name = "/" + TodayDate + "_DailyPnLtest.csv"
+    file_name = "/" + TodayDate + "_DailyPnL.csv"
     os.makedirs(path, exist_ok=True)
     print("Saving down csv file to ",path+file_name)
     df.to_csv(path + file_name)
