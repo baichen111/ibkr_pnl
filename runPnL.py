@@ -1,5 +1,4 @@
-import os
-import time
+import os,time
 from collections import defaultdict
 from datetime import date, timedelta
 
@@ -22,6 +21,33 @@ account = acc
 portItems = ib.portfolio(account)  # get portfolio information
 con_id = {port.contract.conId: (port.contract.symbol + "_Option" if port.contract.secType == "OPT" else port.contract.symbol) for port in portItems}   #map contract id to symbol
 
+def calculate_drawdown():
+    '''
+    calculate draw down in percentage from peak over last 1 year to current price for all holding stocks
+    '''
+    syms = [port.contract.symbol for port in portItems if isinstance(port.contract,Stock)]
+    dd = defaultdict(str)
+    for sym in syms:
+        contract = Stock(symbol=sym, exchange="SMART", currency="USD",primaryExchange = "NASDAQ")
+        bars = ib.reqHistoricalData(
+            contract,
+            endDateTime='',
+            durationStr='12 M',
+            barSizeSetting='1 day',
+            whatToShow='TRADES',
+            useRTH=True,
+            keepUpToDate=False,
+            formatDate=1)
+
+        df = util.df(bars)
+        lastPrice = df.loc[len(df)-1,'close']
+        maxClose = df['close'].cummax().iloc[-1]
+        dd[sym] = str(round(100 * (lastPrice/maxClose - 1),2)) +"%"
+    df = pd.DataFrame(dd,index=['draw_down']).T
+    df['symbols'] = df.index
+    df.reset_index(inplace=True)
+    df = df[['symbols','draw_down']]    
+    return df
 
 def get_positions():
     """
@@ -94,7 +120,6 @@ def pnl_df():
     df['date'] = pd.Timestamp.today()
     df.set_index('date', inplace=True)
     df = df.round(2)
-    print(df)
     return df
 
 
@@ -106,7 +131,7 @@ def save_df(df: pd.DataFrame, path: str = "/home/baichen/ibkr_daily_pnl/"):
     :return: None
     """
     TodayDate = time.strftime("%d_%m_%Y")
-    file_name = "/" + TodayDate + "_DailyPnL.csv"
+    file_name = "/" + TodayDate + "_DailyPnLtest.csv"
     os.makedirs(path, exist_ok=True)
     print("Saving down csv file to ",path+file_name)
     df.to_csv(path + file_name)
@@ -124,4 +149,7 @@ if __name__ == "__main__":
     ib.pnlSingleEvent += on_pnlSingle
     ib.disconnectedEvent += on_disconnected
     df = pnl_df()
+    dd_df = calculate_drawdown()
+    df = pd.merge(df,dd_df,on='symbols',how="left") #join pnl table and drawdown table
+    print(df)
     save_df(df)
