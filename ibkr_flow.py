@@ -77,5 +77,19 @@ daily_report_email = BashOperator(
     dag = dag
 )
 
+#generate watch list css file
+generate_watch_list = BashOperator(
+    task_id = 'generate_watch_list',
+    bash_command = '/home/baichen/anaconda3/bin/python /home/baichen/ibkr_pnl/watchlist.py',
+    dag = dag
+)
+
+#send watch list email
+send_watchlist = BashOperator(
+    task_id = 'send_watchlist',
+    bash_command = '/home/baichen/anaconda3/bin/python /home/baichen/ibkr_pnl/send_watchlist.py',
+    dag = dag
+)
 #tasks dependencies
 start >> daily_pnl  >> daily_pnl_sensor >> [daily_assets_pnl,daily_pnl_plot,daily_pnl_hdb_Q,daily_report_email] >> end 
+start >> generate_watch_list >> send_watchlist >> end
