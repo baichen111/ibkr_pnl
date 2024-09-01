@@ -7,7 +7,9 @@ from pretty_html_table import build_table
 
 class Email:
     def __init__(self,file,subject:str,sender_email,sender_pw,to_email) -> None:
-        
+        '''
+        Load csv file and send data by email
+        '''
         self.data = pd.read_csv(file)
         self.subject = subject
         self.sender_email = sender_email
