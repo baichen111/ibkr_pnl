@@ -42,6 +42,7 @@ class watchlist:
         return reduce(lambda left,right:pd.merge(left,right,left_index=True,right_index=True),dfs)
     
     def save_df(self,df,path = "/home/baichen/watchlist/"):
+        df.index.name = 'symbols'
         TodayDate = time.strftime("%d_%m_%Y")
         file_name = "/" + TodayDate + "_watchlist.csv"
         os.makedirs(path, exist_ok=True)
