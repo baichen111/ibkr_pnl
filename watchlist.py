@@ -43,8 +43,8 @@ class watchlist:
     
     def save_df(self,df,path = "/home/baichen/watchlist/"):
         df.index.name = 'symbols'
-        TodayDate = time.strftime("%d_%m_%Y")
-        file_name = "/" + TodayDate + "_watchlist.csv"
+        print(df)
+        file_name = "/watchlist.csv"
         os.makedirs(path, exist_ok=True)
         print("Saving down csv file to ",path+file_name)
         df.to_csv(path + file_name)
