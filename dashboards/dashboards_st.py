@@ -49,14 +49,20 @@ elif options == 'Plot':
     total_win_value = port_df[port_df['dailyPnL']>0]['dailyPnL'].sum()
     total_loss_value = port_df[port_df['dailyPnL']<0]['dailyPnL'].sum()
     g = pd.DataFrame({'Win':[total_win_value],'Loss':[total_loss_value]}).T
-    bar_win_loss = px.bar(g,color=g.index,color_discrete_map={
-                    "Win": 'green',
-                    "Loss": 'red'
-                    },template='seaborn',text_auto='.2f',title="Win & Loss")
+    bar_win_loss = px.bar(g,color=g.index,
+                          color_discrete_map={
+                            "Win": 'green',
+                            "Loss": 'red'
+                        },template='seaborn',text_auto='.2f',title="Win & Loss")
     cols_2[1].plotly_chart(bar_win_loss)
     
     #plot return for each asset
-    bar_assets = px.bar(portfolio_df,x=portfolio_df.index,y='total_return',text_auto=True,title='Assets Total Return %')
+    return_df = portfolio_df[['total_return']][:-2]
+    return_df['positive_negative'] = return_df["total_return"].apply(lambda x:float(x[:-1])) > 0
+    bar_assets = px.bar(return_df,x=return_df.index,y='total_return',text_auto=True,
+                        color='positive_negative',
+                        color_discrete_map={True: "green", False: "red"},
+                        title='Assets Total Return %')
     st.plotly_chart(bar_assets)
     
     
