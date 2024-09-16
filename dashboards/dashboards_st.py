@@ -38,7 +38,9 @@ elif options == 'Plot':
     
     #plot distribution
     dist_fig = px.histogram(port_df,x='dailyPnL',histnorm='percent',opacity=1,marginal='violin',text_auto='.2f',nbins=20,title="Daily Profit & Loss")
+    dist_fig.update_traces(marker_line_width=1,marker_line_color="white") # add white gap between each hist
     cols_1[0].plotly_chart(dist_fig,use_container_width=True)
+
     
     #plot pie charts
     pie_df = portfolio_df[:-2]
