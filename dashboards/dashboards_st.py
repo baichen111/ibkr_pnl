@@ -39,6 +39,17 @@ elif options == 'Plot':
     #plot distribution
     dist_fig = px.histogram(port_df,x='dailyPnL',histnorm='percent',opacity=1,marginal='violin',text_auto='.2f',nbins=20,title="Daily Profit & Loss")
     dist_fig.update_traces(marker_line_width=1,marker_line_color="white") # add white gap between each hist
+    mean = port_df['dailyPnL'].mean()
+    std = port_df['dailyPnL'].std()
+    dist_fig.add_shape(type='line',x0 = mean,x1 = mean, # add mean line
+                       y0 =0, y1=40 ,
+                       line = dict(color = 'red', dash = 'dash'))
+    dist_fig.add_shape(type='line',x0 = std,x1 = std, # add positive std line
+                       y0=0,y1=40,
+                       line = dict(color = 'blue', dash = 'dash'))
+    dist_fig.add_shape(type='line',x0 = std *-1,x1= std *-1, # add negative std line
+                       y0=0,y1=40,
+                       line = dict(color = 'blue', dash = 'dash'))
     cols_1[0].plotly_chart(dist_fig,use_container_width=True)
 
     
