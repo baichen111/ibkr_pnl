@@ -107,6 +107,7 @@ elif options == 'Plot':
     bar_assets = px.bar(assets_df,y=assets_df.index,x='marketValue',text_auto=True,
                         orientation='h',
                         title='Assets Market Value $',
+                        color='marketValue',
                         labels={'marketValue':'Market Value $'})
     bar_assets.update_traces(textfont_size=15, textangle=0, textposition="outside", cliponaxis=False)
     # bar_assets_return.layout.showlegend = False
