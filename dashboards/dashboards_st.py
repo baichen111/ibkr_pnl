@@ -102,11 +102,12 @@ elif options == 'Plot':
     st.plotly_chart(bar_assets_value)
     
     #plot assets value
+    total_value = round(portfolio_df['marketValue'][-1],2)
     assets_df = portfolio_df[['marketValue']][:-2]
     # return_df['positive_negative'] = return_df["total_return"].apply(lambda x:float(x[:-1])) > 0
     bar_assets = px.bar(assets_df,y=assets_df.index,x='marketValue',text_auto=True,
                         orientation='h',
-                        title='Assets Market Value $',
+                        title=F'Assets Market Value: USD {total_value:,}',
                         color='marketValue',
                         labels={'marketValue':'Market Value $'})
     bar_assets.update_traces(textfont_size=15, textangle=0, textposition="outside", cliponaxis=False)
