@@ -81,12 +81,12 @@ elif options == 'Plot':
     bar_assets_return.layout.showlegend = False
     st.plotly_chart(bar_assets_return)
     
-    #plot assets value 
+    #plot profit value 
     value_df = portfolio_df[['unrealizedPNL']][:-2]
     bar_assets_value = px.bar(value_df,x=value_df.index,y='unrealizedPNL',text_auto=True,
                         color='unrealizedPNL',
                         # color_discrete_map={True: "green", False: "red"},
-                        color_continuous_scale=px.colors.sequential.Viridis,
+                        # color_continuous_scale=px.colors.sequential.Viridis,
                         # color_continuous_scale='Inferno',
                         # color_continuous_scale='Bluered_r',
                         # color_continuous_scale=px.colors.sequential.Cividis_r,
@@ -98,5 +98,16 @@ elif options == 'Plot':
                  },
                         
                         title='Assets Profit in USD')
-    bar_assets_value.update_traces(textfont_size=12, textangle=0, textposition="outside", cliponaxis=False, texttemplate='%{y:.2f}')
+    bar_assets_value.update_traces(textfont_size=15, textangle=0, textposition="outside", cliponaxis=False, texttemplate='%{y:.2f}')
     st.plotly_chart(bar_assets_value)
+    
+    #plot assets value
+    assets_df = portfolio_df[['marketValue']][:-2]
+    # return_df['positive_negative'] = return_df["total_return"].apply(lambda x:float(x[:-1])) > 0
+    bar_assets = px.bar(assets_df,y=assets_df.index,x='marketValue',text_auto=True,
+                        orientation='h',
+                        title='Assets Market Value $',
+                        labels={'marketValue':'Market Value $'})
+    bar_assets.update_traces(textfont_size=15, textangle=0, textposition="outside", cliponaxis=False)
+    # bar_assets_return.layout.showlegend = False
+    st.plotly_chart(bar_assets)
