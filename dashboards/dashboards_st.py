@@ -3,11 +3,13 @@ import streamlit as st
 import glob
 import plotly.express as px
 import plotly.figure_factory as ff
+import numpy as np
 
 st.set_page_config(layout="wide")
 
 wl_df = pd.read_csv("/home/baichen/watchlist/watchlist.csv",index_col="symbols")  # read watch list data
-portfolio_df = pd.read_csv("/home/baichen/ibkr_daily_pnl/DailyPnL.csv",index_col="symbols") # read portfolio data
+portfolio_df = pd.read_csv("/home/baichen/ibkr_daily_pnl/DailyPnL.csv",index_col=0) # read portfolio data
+correlation_df = pd.read_csv('/home/baichen/historical_data/stock_close.csv').corr()
 
 #sidebar setup
 st.sidebar.title('Stock Market Data')
@@ -20,6 +22,14 @@ cols_3 = st.columns(2)
 if options == 'Watch List':
     st.title("Stock Watchlist")
     st.dataframe(wl_df,width=4000,height=800)
+    correlation_df = correlation_df.round(2)
+    
+    mask = np.zeros_like(correlation_df, dtype=bool)
+    mask[np.triu_indices_from(mask)] = True
+    correlation_df = correlation_df.mask(mask).dropna(how='all').dropna('columns', how='all')
+    cor_fig = px.imshow(correlation_df,text_auto=True,aspect='auto',height=1000)
+    # cor_fig.update_traces( texttemplate='{y:.2f}')
+    st.plotly_chart(cor_fig)
 elif options == "Portfolio":
     st.title("Portfolio Data")
     st.dataframe(portfolio_df,width=4000,height=500)
