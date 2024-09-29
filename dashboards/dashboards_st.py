@@ -8,7 +8,7 @@ import numpy as np
 st.set_page_config(layout="wide")
 
 wl_df = pd.read_csv("/home/baichen/watchlist/watchlist.csv",index_col="symbols")  # read watch list data
-portfolio_df = pd.read_csv("/home/baichen/ibkr_daily_pnl/DailyPnL.csv",index_col=0) # read portfolio data
+portfolio_df = pd.read_csv("/home/baichen/ibkr_daily_pnl/DailyPnL.csv",index_col="symbols") # read portfolio data
 correlation_df = pd.read_csv('/home/baichen/historical_data/stock_close.csv').corr()
 
 #sidebar setup
@@ -17,18 +17,17 @@ options = st.sidebar.radio('Select what you want to display:', ['Watch List', 'P
 
 cols_1 = st.columns(2)
 cols_2 = st.columns(2)
-cols_3 = st.columns(2)
+# cols_3 = st.columns(2)
 
 if options == 'Watch List':
     st.title("Stock Watchlist")
-    st.dataframe(wl_df,width=4000,height=800)
+    st.dataframe(wl_df,width=1500,height=800)
     correlation_df = correlation_df.round(2)
     
-    mask = np.zeros_like(correlation_df, dtype=bool)
-    mask[np.triu_indices_from(mask)] = True
-    correlation_df = correlation_df.mask(mask).dropna(how='all').dropna('columns', how='all')
-    cor_fig = px.imshow(correlation_df,text_auto=True,aspect='auto',height=1000)
-    # cor_fig.update_traces( texttemplate='{y:.2f}')
+    mask1 = np.zeros_like(correlation_df, dtype=bool)
+    mask1[np.triu_indices_from(mask1)] = True
+    correlation_df = correlation_df.mask(mask1).dropna(how='all').dropna('columns', how='all')
+    cor_fig = px.imshow(correlation_df,text_auto=True,aspect='auto',height=1000,title="Correlation Map")
     st.plotly_chart(cor_fig)
 elif options == "Portfolio":
     st.title("Portfolio Data")
@@ -114,12 +113,10 @@ elif options == 'Plot':
     #plot assets value
     total_value = round(portfolio_df['marketValue'][-1],2)
     assets_df = portfolio_df[['marketValue']][:-2]
-    # return_df['positive_negative'] = return_df["total_return"].apply(lambda x:float(x[:-1])) > 0
     bar_assets = px.bar(assets_df,y=assets_df.index,x='marketValue',text_auto=True,
                         orientation='h',
                         title=F'Assets Market Value: USD {total_value:,}',
                         color='marketValue',
                         labels={'marketValue':'Market Value $'})
     bar_assets.update_traces(textfont_size=15, textangle=0, textposition="outside", cliponaxis=False)
-    # bar_assets_return.layout.showlegend = False
     st.plotly_chart(bar_assets)
