@@ -6,8 +6,8 @@ a data workflow for daily post-trade pnl report using IBKR
 
 
 
-Portfolio Daily PnL as of 2024.11.06:
-![image](https://github.com/user-attachments/assets/a40c18c2-def0-4b43-8688-3b2cda44700d)
+Portfolio Daily PnL as of 2024.11.08:
+![image](https://github.com/user-attachments/assets/58654285-c586-45b3-8d40-6af9e92da38a)
 
 
 
