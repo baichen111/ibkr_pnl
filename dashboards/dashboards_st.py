@@ -9,17 +9,17 @@ warnings.filterwarnings("ignore")
 
 st.set_page_config(layout="wide")
 
-st.cache_data
+@st.cache_data
 def load_watchlist():
     df =  pd.read_csv("/home/baichen/watchlist/watchlist.csv",index_col="symbols")  # read watch list data
     return df
 
-st.cache_data
+@st.cache_data
 def load_dailyPnL():
     return pd.read_csv("/home/baichen/ibkr_daily_pnl/DailyPnL.csv",index_col="symbols") # read portfolio data
     
 
-st.cache_data
+@st.cache_data
 def load_hist_cor():
     return  pd.read_csv('/home/baichen/historical_data/stock_close.csv').corr()
 
