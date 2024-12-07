@@ -10,7 +10,8 @@
 ![image](https://github.com/user-attachments/assets/c2746613-7902-46f6-8423-79c7d96d91bb)
 
 
-![image](https://github.com/user-attachments/assets/4bfad7f9-52cf-44b9-b68a-11489836c02e)
+![image](https://github.com/user-attachments/assets/a12c136c-59ec-423c-a022-8d873edb3bd7)
+
 
 
 ## Start airflow with command:
