@@ -19,8 +19,9 @@ airflow scheduler
 
 
 ## Start streamlit with command:
-### streamlit run /home/baichen/ibkr_pnl/dashboards/dashboards_st.py --client.showErrorDetails=false
-
+```
+streamlit run /home/baichen/ibkr_pnl/dashboards/dashboards_st.py --client.showErrorDetails=false
+```
 
 
 
