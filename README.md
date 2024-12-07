@@ -1,4 +1,4 @@
-a data workflow for daily post-trade pnl report using IBKR
+A data workflow to capture daily post-trade profit and loss in US stock market using Airflow and IBKR api
 ![image](https://github.com/user-attachments/assets/bd9fd484-e51b-40c6-9569-56b384e7a95f)
 
 
