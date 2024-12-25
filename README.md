@@ -7,7 +7,8 @@
 
 
 ## Portfolio Daily PnL as of 2024.12.24:
-![image](https://github.com/user-attachments/assets/c2746613-7902-46f6-8423-79c7d96d91bb)
+![image](https://github.com/user-attachments/assets/faddd047-42ab-4103-9222-ebf6ac5270d0)
+
 
 
 ![image](https://github.com/user-attachments/assets/259516d8-860e-4f36-84bd-24cb56dbdf3b)
