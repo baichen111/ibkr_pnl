@@ -6,7 +6,7 @@
 
 
 
-## Portfolio Daily PnL as of 2024.12.24:
+## Portfolio Daily PnL as of 2024.12.31:
 ![image](https://github.com/user-attachments/assets/faddd047-42ab-4103-9222-ebf6ac5270d0)
 
 
